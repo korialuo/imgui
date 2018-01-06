@@ -617,6 +617,7 @@ void ImGui_ClipboardCallback(uSynergyCookie cookie, enum uSynergyClipboardFormat
 static void ImGui_ImplIOS_RenderDrawLists (ImDrawData *draw_data)
 {
     // Setup render state: alpha-blending enabled, no face culling, no depth testing, scissor enabled
+	// FIXME: Backport changes from imgui_impl_glfw_gl3.cpp
     GLint last_program, last_texture;
     glGetIntegerv(GL_CURRENT_PROGRAM, &last_program);
     glGetIntegerv(GL_TEXTURE_BINDING_2D, &last_texture);
@@ -792,11 +793,10 @@ bool ImGui_ImplIOS_CreateDeviceObjects()
     glEnableVertexAttribArray(g_AttribLocationUV);
     glEnableVertexAttribArray(g_AttribLocationColor);
     
-#define OFFSETOF(TYPE, ELEMENT) ((size_t)&(((TYPE *)0)->ELEMENT))
-    glVertexAttribPointer(g_AttribLocationPosition, 2, GL_FLOAT, GL_FALSE, sizeof(ImDrawVert), (GLvoid*)OFFSETOF(ImDrawVert, pos));
-    glVertexAttribPointer(g_AttribLocationUV, 2, GL_FLOAT, GL_FALSE, sizeof(ImDrawVert), (GLvoid*)OFFSETOF(ImDrawVert, uv));
-    glVertexAttribPointer(g_AttribLocationColor, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(ImDrawVert), (GLvoid*)OFFSETOF(ImDrawVert, col));
-#undef OFFSETOF
+    glVertexAttribPointer(g_AttribLocationPosition, 2, GL_FLOAT, GL_FALSE, sizeof(ImDrawVert), (GLvoid*)IM_OFFSETOF(ImDrawVert, pos));
+    glVertexAttribPointer(g_AttribLocationUV, 2, GL_FLOAT, GL_FALSE, sizeof(ImDrawVert), (GLvoid*)IM_OFFSETOF(ImDrawVert, uv));
+    glVertexAttribPointer(g_AttribLocationColor, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(ImDrawVert), (GLvoid*)IM_OFFSETOF(ImDrawVert, col));
+
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     
